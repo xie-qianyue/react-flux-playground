@@ -27,7 +27,6 @@ class MovieGallaryComponent extends React.Component {
       this.setState({
         firstIndexMovieOnShow: this.state.firstIndexMovieOnShow - 1,
         lastIndexMovieOnShow: this.state.lastIndexMovieOnShow - 1,
-        isNextDisabled: false
       });
     }
   }
@@ -40,7 +39,6 @@ class MovieGallaryComponent extends React.Component {
       this.setState({
         firstIndexMovieOnShow: this.state.firstIndexMovieOnShow + 1,
         lastIndexMovieOnShow: this.state.lastIndexMovieOnShow + 1,
-        isPreviousDisabled: false
       });
     }
   }
