@@ -20,7 +20,7 @@
     "test:watch": "karma start --autoWatch=true --singleRun=false"
   },
   "repository": "https://github.com/xie-qianyue/react-flux-playground",
-  "keywords": [React, Flux, Yeoman],
+  "keywords": ["React", "Flux", "Yeoman"],
   "author": "XIE Qianyue",
   "devDependencies": {
     "babel-core": "^6.0.0",
