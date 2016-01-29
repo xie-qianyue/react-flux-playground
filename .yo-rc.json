@@ -1,0 +1,7 @@
+{
+  "generator-react-webpack": {
+    "appName": "reactPlayground",
+    "style": "css",
+    "postcss": false
+  }
+}
