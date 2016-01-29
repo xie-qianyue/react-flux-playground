@@ -56,11 +56,8 @@ AppDispatcher.register(action => {
       break;
 
     default:
-      // no op   
+      // no op
   }
 });
 
 export default MovieStore;
-
-
-
