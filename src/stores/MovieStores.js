@@ -9,6 +9,7 @@ const CHANGE_EVENT = 'change';
 
 const _movieStore = {
   moviesInCinema: [],
+  seletedMovie: null,
   loaded: false
 };
 
@@ -47,6 +48,7 @@ AppDispatcher.register(action => {
         .then(res => {
           
           _movieStore.moviesInCinema = Object.assign([], res.subjects);
+          _movieStore.seletedMovie = res.subjects[0];
           _movieStore.loaded = true;
 
           console.log(_movieStore.moviesInCinema);

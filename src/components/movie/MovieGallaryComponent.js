@@ -22,37 +22,49 @@ class MovieGallaryComponent extends React.Component {
   }
 
   handlePrevious() {
+
+    let firstIndex = this.state.firstIndexMovieOnShow - 3;
     
+    this.props.updateMovieDetail(this.props.movies[firstIndex].id);
+
     if(this.state.firstIndexMovieOnShow > 0) {
       this.setState({
-        firstIndexMovieOnShow: this.state.firstIndexMovieOnShow - 1,
-        lastIndexMovieOnShow: this.state.lastIndexMovieOnShow - 1,
+        firstIndexMovieOnShow: firstIndex,
+        lastIndexMovieOnShow: this.state.lastIndexMovieOnShow - 3
       });
     }
   }
 
   handleNext() {
     
-    let lastIndexMovies = this.props.movies.length - 1;
+    let lastIndexMovies = this.props.movies.length - 1,
+        firstIndex = this.state.firstIndexMovieOnShow + 3;
+
+    this.props.updateMovieDetail(this.props.movies[firstIndex].id);
     
     if(this.state.lastIndexMovieOnShow < lastIndexMovies) {
       this.setState({
-        firstIndexMovieOnShow: this.state.firstIndexMovieOnShow + 1,
-        lastIndexMovieOnShow: this.state.lastIndexMovieOnShow + 1,
+        firstIndexMovieOnShow: firstIndex,
+        lastIndexMovieOnShow: this.state.lastIndexMovieOnShow + 3
       });
     }
   }
 
+  // handlePropagateMovie(movieId) {
+  //   console.log('click movie : ' + movieId);
+  //   this.props.updateMovieDetail(movieId);
+  // }
+
   render() {
 
-    // display 3 movies at one time
+    // display 4 movies at one time
     let moviesList = this.props.movies.slice(this.state.firstIndexMovieOnShow, this.state.lastIndexMovieOnShow).map(movie => {
       return (
         <Col xs={6} md={4}>
-          <MovieComponent ImgSrc={movie.images.large} title={movie.title} key={movie.id}/>
+          <MovieComponent ImgSrc={movie.images.large} title={movie.title} key={movie.id} propagateSeletedMovie={this.props.updateMovieDetail.bind(null, movie.id)} />
         </Col>
       );
-    });
+    }, this);
 
     return (
       <div>
@@ -61,10 +73,13 @@ class MovieGallaryComponent extends React.Component {
             <Row>
               {moviesList}
             </Row>
-            <Pager>
-              <PageItem previous onSelect={this.handlePrevious} disabled={this.state.firstIndexMovieOnShow === 0}>Previous</PageItem>
-              <PageItem next onSelect={this.handleNext} disabled={this.state.lastIndexMovieOnShow === (this.props.movies.length - 1)}>Next</PageItem>
-            </Pager>
+            <Row>
+              {Math.ceil(this.state.firstIndexMovieOnShow / 3) + 1} / {Math.ceil(this.props.movies.length / 3)}
+              <Pager>
+                <PageItem onSelect={this.handlePrevious} disabled={this.state.firstIndexMovieOnShow <= 0}>Previous</PageItem>
+                <PageItem onSelect={this.handleNext} disabled={this.state.lastIndexMovieOnShow >= (this.props.movies.length - 1)}>Next</PageItem>
+              </Pager>
+            </Row>
           </Loader>
         </Grid>
       </div>
@@ -76,7 +91,8 @@ MovieGallaryComponent.displayName = 'MovieMovieGallaryComponent';
 
 MovieGallaryComponent.propTypes = {
   loaded: React.PropTypes.bool,
-  movies: React.PropTypes.array
+  movies: React.PropTypes.array,
+  updateMovieDetail: React.PropTypes.func
 };
 
 MovieGallaryComponent.defaultProps = {

@@ -15,7 +15,7 @@ class MovieComponent extends React.Component {
           <Image src={this.props.ImgSrc} thumbnail />
         </div>
         <div>
-          <span>{this.props.title}</span>
+          <span onClick={this.props.propagateSeletedMovie} >{this.props.title}</span>
         </div>
       </div>
     );
@@ -26,7 +26,8 @@ MovieComponent.displayName = 'MovieMovieComponent';
 
 MovieComponent.propTypes = {
   ImgSrc: React.PropTypes.string,
-  title: React.PropTypes.string
+  title: React.PropTypes.string,
+  propagateSeletedMovie: React.PropTypes.func
 };
 
 MovieComponent.defaultProps = {
