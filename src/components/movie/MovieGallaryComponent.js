@@ -69,6 +69,9 @@ class MovieGallaryComponent extends React.Component {
     return (
       <div>
         <Grid>
+          <Row>
+            <h2>Movies on show in Beijing</h2>
+          </Row>
           <Loader loaded={this.props.loaded}>
             <Row>
               {moviesList}
