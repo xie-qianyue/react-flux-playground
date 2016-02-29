@@ -49,6 +49,7 @@ class MoviesPageComponent extends React.Component {
 
   render() {
 
+    // these codes work, but the conditional expression is more precise
     // let seletedMovie;
     // if(this.state.seletedMovie) {
     //   seletedMovie = (<MovieDetailsComponent movie={this.state.seletedMovie}/>);
@@ -58,17 +59,12 @@ class MoviesPageComponent extends React.Component {
       <div className="container">
         <MovieGallaryComponent movies={this.state.moviesInCinema} loaded={this.state.loaded} updateMovieDetail={this.handleUpdateMovieDetail}/>
         {this.state.seletedMovie ? <MovieDetailsComponent movie={this.state.seletedMovie}/> : null}
+        {/*seletedMovie*/}
       </div>
     );
   }
 }
 
 MoviesPageComponent.displayName = 'MovieMoviesPageComponent';
-
-MoviesPageComponent.propTypes = {
-  movies: React.PropTypes.array,
-  loaded: React.PropTypes.bool,
-  updateMovieDetail: React.PropTypes.func
-};
 
 export default MoviesPageComponent;

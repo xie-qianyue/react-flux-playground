@@ -15,7 +15,7 @@ class MovieComponent extends React.Component {
           <Image src={this.props.ImgSrc} thumbnail />
         </div>
         <div>
-          <span onClick={this.props.propagateSeletedMovie} >{this.props.title}</span>
+          <span onClick={this.props.propagateSeletedMovie} className="movieName">{this.props.title}</span>
         </div>
       </div>
     );

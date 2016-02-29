@@ -50,14 +50,9 @@ class MovieGallaryComponent extends React.Component {
     }
   }
 
-  // handlePropagateMovie(movieId) {
-  //   console.log('click movie : ' + movieId);
-  //   this.props.updateMovieDetail(movieId);
-  // }
-
   render() {
 
-    // display 4 movies at one time
+    // display 3 movies at one time
     let moviesList = this.props.movies.slice(this.state.firstIndexMovieOnShow, this.state.lastIndexMovieOnShow).map(movie => {
       return (
         <Col xs={6} md={4}>

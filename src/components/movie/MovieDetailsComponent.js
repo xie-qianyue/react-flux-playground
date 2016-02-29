@@ -40,9 +40,4 @@ class MovieDetailsComponent extends React.Component {
 
 MovieDetailsComponent.displayName = 'MovieMovieDetailsComponent';
 
-// MovieDetailsComponent.propTypes = {
-//   movie: React.PropTypes.object
-// };
-// MovieDetailsComponent.defaultProps = {};
-
 export default MovieDetailsComponent;
