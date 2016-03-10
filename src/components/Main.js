@@ -13,11 +13,14 @@ class App extends React.Component {
         <Navbar>
           <Navbar.Collapse>
             <Nav>
-              <LinkContainer to="/movie">
-                <NavItem>Movie</NavItem>
+              <LinkContainer to="/ratp">
+                <NavItem>Ratp</NavItem>
               </LinkContainer>
-              <LinkContainer to="/onlinecommun">
-                <NavItem>Online Commun</NavItem>
+              <LinkContainer to="/doubanMovie">
+                <NavItem>Douban Movie</NavItem>
+              </LinkContainer>
+              <LinkContainer to="/doubanOnlinecommun">
+                <NavItem>Douban Online Commun</NavItem>
               </LinkContainer>
             </Nav>
           </Navbar.Collapse>
