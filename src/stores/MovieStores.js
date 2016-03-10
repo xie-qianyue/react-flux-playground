@@ -13,7 +13,6 @@ const _movieStore = {
   loaded: false
 };
 
-
 const MovieStore = Object.assign({}, EventEmitter.prototype, {
 
   getStore: function() {
