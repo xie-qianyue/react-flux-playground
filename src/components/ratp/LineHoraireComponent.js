@@ -25,7 +25,7 @@ class LineHoraireComponent extends React.Component {
           </Col>
           <Col xs={2}>
             {this.props.nnext}
-          </Col>                                    
+          </Col>
         </Row>
       </div>
     );
@@ -40,7 +40,7 @@ LineHoraireComponent.propTypes = {
   station: React.PropTypes.string,
   destination: React.PropTypes.string,
   next: React.PropTypes.string,
-  nnext: React.PropTypes.string  
+  nnext: React.PropTypes.string
 };
 // LineHoraireComponent.defaultProps = {};
 

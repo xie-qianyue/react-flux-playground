@@ -7,7 +7,7 @@ import $ from 'jquery';
 
 const CHANGE_EVENT = 'change';
 
-const _movieStore = {
+let _movieStore = {
   moviesInCinema: [],
   seletedMovie: null,
   loaded: false
@@ -46,11 +46,14 @@ AppDispatcher.register(action => {
       getMoviesInCinema()
         .then(res => {
           
-          _movieStore.moviesInCinema = Object.assign([], res.subjects);
-          _movieStore.seletedMovie = res.subjects[0];
-          _movieStore.loaded = true;
+          // "immutable" _movieStore
+          _movieStore = {
+            moviesInCinema: res.subjects,
+            seletedMovie: res.subjects[0],
+            loaded: true
+          };
 
-          console.log(_movieStore.moviesInCinema);
+          // console.log(_movieStore.moviesInCinema);
 
           MovieStore.emitChange();
         });

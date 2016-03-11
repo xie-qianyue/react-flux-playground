@@ -4,6 +4,7 @@ import { EventEmitter } from 'events';
 import RatpActions from '../constants/RatpConstants';
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import $ from 'jquery';
+import Immutable from 'immutable';
 
 // class of horaire
 class Horaire {
@@ -21,10 +22,8 @@ class Horaire {
 
 const CHANGE_EVENT = 'change';
 
-const _ratpStore = {
-  horaires: [
-    new Horaire('bus', '126', '1658', 'Issy Val de Seine', '70', 'Porte D Orleans', '', '')
-  ]
+let _ratpStore = {
+  horaires: Immutable.Map({"bus-126-1658-70": new Horaire('bus', '126', '1658', 'Issy Val de Seine', '70', 'Porte D Orleans', '', '')})
 };
 
 const RatpStore = Object.assign({}, EventEmitter.prototype, {
@@ -47,11 +46,34 @@ const RatpStore = Object.assign({}, EventEmitter.prototype, {
 
 });
 
+function updateHoraires(horaire) {
+  let request = "http://api-ratp.pierre-grimaud.fr/v2/" + horaire.typeLine + '/' + horaire.line + '/stations/' + horaire.stationId + '?destination=' + horaire.destinationId;
+  return $.getJSON(request);
+}
+
 AppDispatcher.register(action => {
 
   switch(action.actionType) {
     
     case RatpActions.UPDATE_HORAIRES:
+      _ratpStore.horaires.forEach((horaire, id) => {
+        updateHoraires(horaire).then(res => {
+          let oldHoraire = _ratpStore.horaires.get(id);
+          let next = oldHoraire.next,
+              nnext = oldHoraire.nnext,
+              newNext = res.response.schedules[0].message,
+              newNnext = res.response.schedules[1].message;
+          if(next !== newNext || nnext !== newNnext) {
+            _ratpStore.horaires.update(id, () => {
+              oldHoraire.next = newNext;
+              oldHoraire.nnext = newNnext;
+              return oldHoraire;
+            });
+
+            RatpStore.emitChange();
+          }
+        });
+      });
 
       break;
 

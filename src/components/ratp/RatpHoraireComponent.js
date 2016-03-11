@@ -11,7 +11,7 @@ class RatpHoraireComponent extends React.Component {
   render() {
 
     let horaireList = this.props.horaires.map(horaire => {
-      return (      
+      return (
         <LineHoraireComponent key={horaire.id} line={horaire.line} station={horaire.stationName} destination={horaire.destinationName} next={horaire.next} nnext={horaire.nnext} />
       );
     }, this);
