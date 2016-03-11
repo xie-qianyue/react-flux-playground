@@ -56,7 +56,7 @@ class MovieGallaryComponent extends React.Component {
     let moviesList = this.props.movies.slice(this.state.firstIndexMovieOnShow, this.state.lastIndexMovieOnShow).map(movie => {
       return (
         <Col xs={6} md={4}>
-          <MovieComponent ImgSrc={movie.images.large} title={movie.title} key={movie.id} propagateSeletedMovie={this.props.updateMovieDetail.bind(null, movie.id)} />
+          <MovieComponent key={movie.id} ImgSrc={movie.images.large} title={movie.title} propagateSeletedMovie={this.props.updateMovieDetail.bind(null, movie.id)} />
         </Col>
       );
     }, this);

@@ -7,11 +7,13 @@ import $ from 'jquery';
 
 // class of horaire
 class Horaire {
-  constructor(typeLine, line, station, destination, next, nnext) {
+  constructor(typeLine, line, stationId, stationName, destinationId, destinationName, next, nnext) {
     this.typeLine = typeLine;
     this.line = line;
-    this.station = station;
-    this.destination = destination;
+    this.stationId = stationId;
+    this.stationName = stationName;
+    this.destinationId = destinationId;
+    this.destinationName = destinationName;
     this.next = next;
     this.nnext = nnext;
   }
@@ -21,14 +23,14 @@ const CHANGE_EVENT = 'change';
 
 const _ratpStore = {
   horaires: [
-    new Horaire('bus', '126', '1658', '70', '', '')
+    new Horaire('bus', '126', '1658', 'Issy Val de Seine', '70', 'Porte D Orleans', '', '')
   ]
 };
 
-const MovieStore = Object.assign({}, EventEmitter.prototype, {
+const RatpStore = Object.assign({}, EventEmitter.prototype, {
 
   getStore: function() {
-    return _movieStore;
+    return _ratpStore;
   },
 
   emitChange: function() {
@@ -57,3 +59,5 @@ AppDispatcher.register(action => {
       // no op
   }
 });
+
+export default RatpStore;
