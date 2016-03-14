@@ -2,6 +2,7 @@
 
 import React from 'react';
 import RatpHoraireComponent from './RatpHoraireComponent';
+import AddLineComponent from './AddLineComponent';
 import RatpActions from '../../actions/RatpActions';
 import RatpStore from '../../stores/RatpStores';
 
@@ -17,19 +18,16 @@ class RatpPageComponent extends React.Component {
 
     this.onChangeState = this.onChangeState.bind(this);
   }
-/*
-  componentWillMount() {
-    // refresh horaires every 10s
-    this.timer = setInterval(RatpActions.updateHoraires(), 10000);
-  }
-*/
+
   componentDidMount() {
-    this.timer = setInterval(RatpActions.updateHoraires(), 10000);
-    RatpStore.addChangeListener(this.onChangeState);
+    this.timer = setInterval(function(){
+      RatpActions.updateHoraires()
+    }, 3000);
+    RatpStore.addChangeHorairesListener(this.onChangeState);
   }
 
   componentWillUnmount() {
-    RatpStore.removeChangeListener(this.onChangeState);
+    RatpStore.removeChangeHorairesListener(this.onChangeState);
     clearInterval(this.timer);
   }
 
@@ -41,6 +39,7 @@ class RatpPageComponent extends React.Component {
     return (
       <div className="container">
         <RatpHoraireComponent horaires={this.state.horaires}/>
+        <AddLineComponent />
       </div>
     );
   }

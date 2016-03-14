@@ -20,10 +20,14 @@ class Horaire {
   }
 }
 
-const CHANGE_EVENT = 'change';
+const CHANGE_HORAIRES_EVENT = 'changeHoraires';
+const CHANGE_NEW_LINE_EVENT = 'changeNewLine';
 
 let _ratpStore = {
-  horaires: Immutable.Map({"bus-126-1658-70": new Horaire('bus', '126', '1658', 'Issy Val de Seine', '70', 'Porte D Orleans', '', '')})
+  horaires: Immutable.Map({"bus-126-1658-70": new Horaire('bus', '126', '1658', 'Issy Val de Seine', '70', 'Porte D Orleans', '', '')}),
+  newLines: [],
+  newStations: [],
+  newDestinations: []
 };
 
 const RatpStore = Object.assign({}, EventEmitter.prototype, {
@@ -32,17 +36,29 @@ const RatpStore = Object.assign({}, EventEmitter.prototype, {
     return _ratpStore;
   },
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
+  emitChangeHoraires: function() {
+    this.emit(CHANGE_HORAIRES_EVENT);
   },
 
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
+  emitChangeNewLine: function() {
+    this.emit(CHANGE_NEW_LINE_EVENT);
   },
 
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  }
+  addChangeHorairesListener: function(callback) {
+    this.on(CHANGE_HORAIRES_EVENT, callback);
+  },
+
+  removeChangeHorairesListener: function(callback) {
+    this.removeListener(CHANGE_HORAIRES_EVENT, callback);
+  },
+
+  addChangeNewLineListener: function(callback) {
+    this.on(CHANGE_NEW_LINE_EVENT, callback);
+  },
+
+  removeChangeNewLineListener: function(callback) {
+    this.removeListener(CHANGE_NEW_LINE_EVENT, callback);
+  }  
 
 });
 
@@ -51,10 +67,14 @@ function updateHoraires(horaire) {
   return $.getJSON(request);
 }
 
+function getLinesByType(type) {
+  let request = "http://api-ratp.pierre-grimaud.fr/v2/" + type;
+  return $.getJSON(request);
+}
+
 AppDispatcher.register(action => {
 
-  switch(action.actionType) {
-    
+  switch(action.actionType) {    
     case RatpActions.UPDATE_HORAIRES:
       _ratpStore.horaires.forEach((horaire, id) => {
         updateHoraires(horaire).then(res => {
@@ -70,11 +90,21 @@ AppDispatcher.register(action => {
               return oldHoraire;
             });
 
-            RatpStore.emitChange();
+            RatpStore.emitChangeHoraires();
           }
         });
       });
+      break;
 
+    case RatpActions.GET_LINES_BY_TYPE:
+      getLinesByType(action.data).then(res => {
+        _ratpStore.newLines.length = 0;
+        res.response[action.data].forEach(data => {          
+          _ratpStore.newLines.push(data.line);
+        });
+
+        RatpStore.emitChangeNewLine();
+      });
       break;
 
     default:
