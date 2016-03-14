@@ -3,7 +3,6 @@
 import React from 'react';
 import RatpActions from '../../actions/RatpActions';
 import RatpStore from '../../stores/RatpStores';
-import { SplitButton, MenuItem } from 'react-bootstrap';
 
 require('styles/ratp/AddLine.css');
 
@@ -38,31 +37,30 @@ class AddLineComponent extends React.Component {
     this.refs.line.disabled = false;
   }  
 
-  onSelectType(event, eventKey) {
+  onSelectType(event) {
     debugger;
-    RatpActions.getLinesByType(eventKey);
-    event.target.title = eventKey;
+    RatpActions.getLinesByType(event.target.value);
   }
 
   render() {
 
-    let LineMenuItems = this.state.lines.map((line) => {
+    let LineOptions = this.state.lines.map((line) => {
       return (
-        <MenuItem eventKey={line}>{line}</MenuItem>
+        <option value={line}>{line}</option>
       )
     });
 
     return (
       <div className="addline-component">
-        <SplitButton bsStyle="default" title="Type" id="type" onSelect={this.onSelectType}>
-          <MenuItem eventKey="rers">rers</MenuItem>
-          <MenuItem eventKey="metros">metros</MenuItem>
-          <MenuItem eventKey="tramways">tramways</MenuItem>
-          <MenuItem eventKey="bus">bus</MenuItem>
-        </SplitButton>
-        <SplitButton bsStyle='default' title="Line" id="line" ref="line" disabled="true">
-          {LineMenuItems}   
-        </SplitButton>        
+        <select onChange={this.onSelectType}>
+          <option value="rers">rers</option>
+          <option value="metros">metros</option>
+          <option value="tramways">tramways</option>
+          <option value="bus">bus</option>
+        </select>
+        <select ref="line" disabled="true">
+          {LineOptions}   
+        </select>        
       </div>
     );
   }
