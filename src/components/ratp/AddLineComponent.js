@@ -36,28 +36,26 @@ class AddLineComponent extends React.Component {
       stations: RatpStore.getStore().newStations,
       destinations: RatpStore.getStore().newDestinations
     });
-  }  
+  }
 
   onSelectType(event) {
     RatpActions.getLinesByType(event.target.value);
   }
 
   onSelectLine(event) {
-    debugger;
     let type = this.refs.type.getValue(),
         lineSeleted = event.target.value;
     RatpActions.getStationsByTypeAndLine(type, lineSeleted);
     // update destinations
     this.state.lines.some((line) => {
-      debugger;
       if(line.line === lineSeleted) {
-        this.state.setState{
+        this.setState({
           destinations: line.destinations
-        };
+        });
         // break
         return true;
       }
-    }, this)  
+    }, this);
   }
 
   render() {
@@ -92,11 +90,11 @@ class AddLineComponent extends React.Component {
           </Input>
           <Input type="select" label="Line" ref="line" disabled={this.state.lines.length==0} onChange={this.onSelectLine}>
             <option value="" disable>-- select line --</option>
-            {lineOptions}   
+            {lineOptions}
           </Input>
           <Input type="select" label="Station" ref="station" disabled={this.state.stations.length==0}>
             <option value="" disable>-- select station --</option>
-            {stationOptions}   
+            {stationOptions}
           </Input>
           <Input type="select" label="Destination" ref="destination" disabled={this.state.destinations.length==0}>
             <option value="" disable>-- select destination --</option>

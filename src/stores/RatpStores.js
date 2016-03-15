@@ -24,7 +24,7 @@ const CHANGE_HORAIRES_EVENT = 'changeHoraires';
 const CHANGE_NEW_LINE_EVENT = 'changeNewLine';
 
 /**
- *  newLines: 
+ *  newLines:
  *  [
  *    {
  *      line: 'A'
@@ -35,7 +35,7 @@ const CHANGE_NEW_LINE_EVENT = 'changeNewLine';
  *  ]
  */
 let _ratpStore = {
-  horaires: Immutable.Map({"bus-126-1658-70": new Horaire('bus', '126', '1658', 'Issy Val de Seine', '70', 'Porte D Orleans', '', '')}),
+  horaires: Immutable.Map({'bus-126-1658-70': new Horaire('bus', '126', '1658', 'Issy Val de Seine', '70', 'Porte D Orleans', '', '')}),
   newLines: [],
   newStations: [],
   newDestinations: []
@@ -69,28 +69,28 @@ const RatpStore = Object.assign({}, EventEmitter.prototype, {
 
   removeChangeNewLineListener: function(callback) {
     this.removeListener(CHANGE_NEW_LINE_EVENT, callback);
-  }  
+  }
 
 });
 
 function updateHoraires(horaire) {
-  let request = "http://api-ratp.pierre-grimaud.fr/v2/" + horaire.typeLine + '/' + horaire.line + '/stations/' + horaire.stationId + '?destination=' + horaire.destinationId;
+  let request = 'http://api-ratp.pierre-grimaud.fr/v2/' + horaire.typeLine + '/' + horaire.line + '/stations/' + horaire.stationId + '?destination=' + horaire.destinationId;
   return $.getJSON(request);
 }
 
 function getLinesByType(type) {
-  let request = "http://api-ratp.pierre-grimaud.fr/v2/" + type;
+  let request = 'http://api-ratp.pierre-grimaud.fr/v2/' + type;
   return $.getJSON(request);
 }
 
 function getStationsByTypeAndLine(type, line) {
-  let request = "http://api-ratp.pierre-grimaud.fr/v2/" + type +"/" + line + "/stations";
+  let request = 'http://api-ratp.pierre-grimaud.fr/v2/' + type + '/' + line + '/stations';
   return $.getJSON(request);
 }
 
 AppDispatcher.register(action => {
 
-  switch(action.actionType) {    
+  switch(action.actionType) {
     case RatpActions.UPDATE_HORAIRES:
       _ratpStore.horaires.forEach((horaire, id) => {
         updateHoraires(horaire).then(res => {
@@ -115,7 +115,7 @@ AppDispatcher.register(action => {
     case RatpActions.GET_LINES:
       getLinesByType(action.data).then(res => {
         _ratpStore.newLines.length = 0;
-        res.response[action.data].forEach(data => {          
+        res.response[action.data].forEach(data => {
           _ratpStore.newLines.push(data);
         });
 
@@ -132,7 +132,7 @@ AppDispatcher.register(action => {
             name: data.name
           });
         });
-      });      
+      });
       break;
 
     default:
