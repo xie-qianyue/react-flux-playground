@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import { Input } from 'react-bootstrap';
 import RatpActions from '../../actions/RatpActions';
 import RatpStore from '../../stores/RatpStores';
 
@@ -18,6 +19,7 @@ class AddLineComponent extends React.Component {
     }
 
     this.onChangeState = this.onChangeState.bind(this);
+    this.onSelectLine = this.onSelectLine.bind(this);
   }
 
   componentDidMount() {
@@ -34,33 +36,73 @@ class AddLineComponent extends React.Component {
       stations: RatpStore.getStore().newStations,
       destinations: RatpStore.getStore().newDestinations
     });
-    this.refs.line.disabled = false;
   }  
 
   onSelectType(event) {
-    debugger;
     RatpActions.getLinesByType(event.target.value);
+  }
+
+  onSelectLine(event) {
+    debugger;
+    let type = this.refs.type.getValue(),
+        lineSeleted = event.target.value;
+    RatpActions.getStationsByTypeAndLine(type, lineSeleted);
+    // update destinations
+    this.state.lines.some((line) => {
+      debugger;
+      if(line.line === lineSeleted) {
+        this.state.setState{
+          destinations: line.destinations
+        };
+        // break
+        return true;
+      }
+    }, this)  
   }
 
   render() {
 
-    let LineOptions = this.state.lines.map((line) => {
+    let lineOptions = this.state.lines.map(line => {
       return (
-        <option value={line}>{line}</option>
-      )
+        <option value={line.line} key={line.line}>{line.line}</option>
+      );
+    });
+
+    let stationOptions = this.state.stations.map(station => {
+      return (
+        <option value={station.id} key={station.id}>{station.name}</option>
+      );
+    });
+
+    let destinationOptions = this.state.destinations.map(destination => {
+      return (
+        <option value={destination.id} key={destination.id}>{destination.name}</option>
+      );
     });
 
     return (
       <div className="addline-component">
-        <select onChange={this.onSelectType}>
-          <option value="rers">rers</option>
-          <option value="metros">metros</option>
-          <option value="tramways">tramways</option>
-          <option value="bus">bus</option>
-        </select>
-        <select ref="line" disabled="true">
-          {LineOptions}   
-        </select>        
+        <form>
+          <Input type="select" label="Line Type" placeholder="select line type" ref="type" onChange={this.onSelectType}>
+            <option value="" disable>-- select type --</option>
+            <option value="rers">rers</option>
+            <option value="metros">metros</option>
+            <option value="tramways">tramways</option>
+            <option value="bus">bus</option>
+          </Input>
+          <Input type="select" label="Line" ref="line" disabled={this.state.lines.length==0} onChange={this.onSelectLine}>
+            <option value="" disable>-- select line --</option>
+            {lineOptions}   
+          </Input>
+          <Input type="select" label="Station" ref="station" disabled={this.state.stations.length==0}>
+            <option value="" disable>-- select station --</option>
+            {stationOptions}   
+          </Input>
+          <Input type="select" label="Destination" ref="destination" disabled={this.state.destinations.length==0}>
+            <option value="" disable>-- select destination --</option>
+            {destinationOptions}
+          </Input>
+        </form>
       </div>
     );
   }

@@ -21,7 +21,7 @@ class RatpPageComponent extends React.Component {
 
   componentDidMount() {
     this.timer = setInterval(function(){
-      RatpActions.updateHoraires()
+      RatpActions.updateHoraires();
     }, 3000);
     RatpStore.addChangeHorairesListener(this.onChangeState);
   }

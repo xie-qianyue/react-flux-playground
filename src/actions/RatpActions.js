@@ -11,11 +11,20 @@ const RatpActions = {
 
   getLinesByType(type) {
     AppDispatcher.dispatch({
-      actionType: RatpConstants.GET_LINES_BY_TYPE,
+      actionType: RatpConstants.GET_LINES,
       data: type
     })
-  }
+  },
 
+  getStationsByTypeAndLine(type, line) {
+    AppDispatcher.dispatch({
+      actionType: RatpConstants.GET_STATIONS,
+      data: {
+        type: type,
+        line: line
+      }
+    })
+  }
 };
 
 export default RatpActions;

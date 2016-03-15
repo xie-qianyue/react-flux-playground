@@ -23,6 +23,17 @@ class Horaire {
 const CHANGE_HORAIRES_EVENT = 'changeHoraires';
 const CHANGE_NEW_LINE_EVENT = 'changeNewLine';
 
+/**
+ *  newLines: 
+ *  [
+ *    {
+ *      line: 'A'
+ *      destinations: [
+ *        {id: 1, name: 'St-Germain-en-Laye Poissy-Cergy'}, ...
+ *      ]
+ *    }, ...
+ *  ]
+ */
 let _ratpStore = {
   horaires: Immutable.Map({"bus-126-1658-70": new Horaire('bus', '126', '1658', 'Issy Val de Seine', '70', 'Porte D Orleans', '', '')}),
   newLines: [],
@@ -72,6 +83,11 @@ function getLinesByType(type) {
   return $.getJSON(request);
 }
 
+function getStationsByTypeAndLine(type, line) {
+  let request = "http://api-ratp.pierre-grimaud.fr/v2/" + type +"/" + line + "/stations";
+  return $.getJSON(request);
+}
+
 AppDispatcher.register(action => {
 
   switch(action.actionType) {    
@@ -96,15 +112,27 @@ AppDispatcher.register(action => {
       });
       break;
 
-    case RatpActions.GET_LINES_BY_TYPE:
+    case RatpActions.GET_LINES:
       getLinesByType(action.data).then(res => {
         _ratpStore.newLines.length = 0;
         res.response[action.data].forEach(data => {          
-          _ratpStore.newLines.push(data.line);
+          _ratpStore.newLines.push(data);
         });
 
         RatpStore.emitChangeNewLine();
       });
+      break;
+
+    case RatpActions.GET_STATIONS:
+      getStationsByTypeAndLine(action.data.type, action.data.line).then(res => {
+        _ratpStore.newStations.length = 0;
+        res.response.stations.forEach(data => {
+          _ratpStore.newStations.push({
+            id: data.id,
+            name: data.name
+          });
+        });
+      });      
       break;
 
     default:
