@@ -13,7 +13,7 @@ const RatpActions = {
     AppDispatcher.dispatch({
       actionType: RatpConstants.GET_LINES,
       data: type
-    })
+    });
   },
 
   getStationsByTypeAndLine(type, line) {
@@ -23,7 +23,21 @@ const RatpActions = {
         type: type,
         line: line
       }
-    })
+    });
+  },
+
+  addLine(type, line, stationId, stationName, destinationId, destinationName) {
+    AppDispatcher.dispatch({
+      actionType: RatpConstants.ADD_LINE,
+      data: {
+        type: type,
+        line: line,
+        stationId: stationId,
+        stationName: stationName,
+        destinationId: destinationId,
+        destinationName: destinationName
+      }
+    });
   }
 };
 

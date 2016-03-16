@@ -8,7 +8,7 @@ import Immutable from 'immutable';
 
 // class of horaire
 class Horaire {
-  constructor(typeLine, line, stationId, stationName, destinationId, destinationName, next, nnext) {
+  constructor(typeLine, line, stationId, stationName, destinationId, destinationName, next='', nnext='') {
     this.typeLine = typeLine;
     this.line = line;
     this.stationId = stationId;
@@ -35,7 +35,7 @@ const CHANGE_NEW_LINE_EVENT = 'changeNewLine';
  *  ]
  */
 let _ratpStore = {
-  horaires: Immutable.Map({'bus-126-1658-70': new Horaire('bus', '126', '1658', 'Issy Val de Seine', '70', 'Porte D Orleans', '', '')}),
+  horaires: Immutable.Map({'bus-126-1658-70': new Horaire('bus', '126', '1658', 'Issy Val de Seine', '70', 'Porte D Orleans')}),
   newLines: [],
   newStations: [],
   newDestinations: []
@@ -99,6 +99,7 @@ AppDispatcher.register(action => {
               nnext = oldHoraire.nnext,
               newNext = res.response.schedules[0].message,
               newNnext = res.response.schedules[1].message;
+          
           if(next !== newNext || nnext !== newNnext) {
             _ratpStore.horaires.update(id, () => {
               oldHoraire.next = newNext;
@@ -115,10 +116,13 @@ AppDispatcher.register(action => {
     case RatpActions.GET_LINES:
       getLinesByType(action.data).then(res => {
         _ratpStore.newLines.length = 0;
+        
         res.response[action.data].forEach(data => {
           _ratpStore.newLines.push(data);
         });
 
+        // reset stations
+        _ratpStore.newStations.length = 0;
         RatpStore.emitChangeNewLine();
       });
       break;
@@ -135,6 +139,23 @@ AppDispatcher.register(action => {
       });
       break;
 
+    case RatpActions.ADD_LINE:
+      let type = action.data.type,
+          line = action.data.line,
+          stationId = action.data.stationId,
+          stationName = action.data.stationName,
+          destinationId = action.data.destinationId,
+          destinationName = action.data.destinationName;
+      let idHoraire = type + '-' + line + '-' + stationId + '-' + destinationId,
+          horaire = new Horaire(type, line, stationId, stationName, destinationId, destinationName);
+      _ratpStore.horaires = _ratpStore.horaires.concat({idHoraire, horaire});
+      
+      // reset add form
+      _ratpStore.newLines.length = 0;
+      _ratpStore.newStations.length = 0;
+      _ratpStore.newDestinations.length = 0;
+      RatpStore.emitChangeNewLine();
+      break;
     default:
       // no op
   }

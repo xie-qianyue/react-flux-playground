@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import { Input } from 'react-bootstrap';
+import { Input, ButtonInput } from 'react-bootstrap';
 import RatpActions from '../../actions/RatpActions';
 import RatpStore from '../../stores/RatpStores';
 
@@ -20,6 +20,7 @@ class AddLineComponent extends React.Component {
 
     this.onChangeState = this.onChangeState.bind(this);
     this.onSelectLine = this.onSelectLine.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -56,6 +57,19 @@ class AddLineComponent extends React.Component {
         return true;
       }
     }, this);
+  }
+
+  onSubmit(event){
+    event.preventDefault();
+    let stationDOM = this.refs.station.getInputDOMNode(),
+        destinationDOM = this.refs.destination.getInputDOMNode();
+    let type = this.refs.type.getValue(),
+        line = this.refs.line.getValue(),
+        stationId = this.refs.station.getValue(),
+        destinationId = this.refs.destination.getValue(),
+        stationName = stationDOM.options[stationDOM.selectedIndex].text,
+        destinationName = destinationDOM.options[destinationDOM.selectedIndex].text;
+    RatpActions.addLine(type, line, stationId, stationName, destinationId, destinationName);
   }
 
   render() {
@@ -100,6 +114,7 @@ class AddLineComponent extends React.Component {
             <option value="" disable>-- select destination --</option>
             {destinationOptions}
           </Input>
+           <ButtonInput type="submit" value="Submit Button" onClick={this.onSubmit}/>
         </form>
       </div>
     );
