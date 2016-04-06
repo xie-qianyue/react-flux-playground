@@ -4,8 +4,11 @@ import React from 'react';
 import { Input, ButtonInput } from 'react-bootstrap';
 import RatpActions from '../../actions/RatpActions';
 import RatpStore from '../../stores/RatpStores';
+import Select from 'react-select';
+import { Row, Col } from 'react-bootstrap';
 
 require('styles/ratp/AddLine.css');
+require('react-select/dist/react-select.css')
 
 class AddLineComponent extends React.Component {
 
@@ -15,9 +18,18 @@ class AddLineComponent extends React.Component {
     this.state = {
       lines: [],
       stations: [],
-      destinations: []
+      destinations: [],
+      typeOptions:[
+        {value: 'rers', label: 'RER'},
+        {value: 'metros', label: 'Metro'},
+        {value: 'tramways', label: 'Tramway'},
+        {value: 'bus', label: 'Bus'}
+      ],
+      type: '',
+      line: ''
     }
 
+    this.onSelectType = this.onSelectType.bind(this);
     this.onChangeState = this.onChangeState.bind(this);
     this.onSelectLine = this.onSelectLine.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -39,24 +51,41 @@ class AddLineComponent extends React.Component {
     });
   }
 
-  onSelectType(event) {
-    RatpActions.getLinesByType(event.target.value);
+  onSelectType(typeOption) {
+    if(typeOption){
+      let typeSelected = typeOption.value;
+      this.setState({
+        type: typeSelected
+      });
+      RatpActions.getLinesByType(typeSelected);
+    }else{
+      // reset select
+      this.setState({
+        type: ''
+      });
+    }
   }
 
-  onSelectLine(event) {
-    let type = this.refs.type.getValue(),
-        lineSeleted = event.target.value;
-    RatpActions.getStationsByTypeAndLine(type, lineSeleted);
-    // update destinations
-    this.state.lines.some((line) => {
-      if(line.line === lineSeleted) {
-        this.setState({
-          destinations: line.destinations
-        });
-        // break
-        return true;
-      }
-    }, this);
+  onSelectLine(lineOption) {
+    if(lineOption){
+      let lineSeleted = lineOption.value;
+      RatpActions.getStationsByTypeAndLine(this.state.type, lineSeleted);
+      // update destinations
+      this.state.lines.some((line) => {
+        if(line.line === lineSeleted) {
+          this.setState({
+            destinations: line.destinations,
+            line: lineSeleted
+          });
+          // break
+          return true;
+        }
+      }, this);
+    }else{
+      this.setState({
+        line: ''
+      });
+    }
   }
 
   onSubmit(event){
@@ -76,7 +105,7 @@ class AddLineComponent extends React.Component {
 
     let lineOptions = this.state.lines.map(line => {
       return (
-        <option value={line.line} key={line.line}>{line.line}</option>
+        {value: line.line, label: line.line}
       );
     });
 
@@ -95,17 +124,27 @@ class AddLineComponent extends React.Component {
     return (
       <div className="addline-component">
         <form>
-          <Input type="select" label="Line Type" placeholder="select line type" ref="type" onChange={this.onSelectType}>
-            <option value="" disable>-- select type --</option>
-            <option value="rers">rers</option>
-            <option value="metros">metros</option>
-            <option value="tramways">tramways</option>
-            <option value="bus">bus</option>
-          </Input>
-          <Input type="select" label="Line" ref="line" disabled={this.state.lines.length==0} onChange={this.onSelectLine}>
-            <option value="" disable>-- select line --</option>
-            {lineOptions}
-          </Input>
+          <Row>
+            <Col xs={2}>
+              <Select
+                name="Line Type"
+                value={this.state.type}
+                options={this.state.typeOptions}
+                onChange={this.onSelectType}
+                placeholder="select line type"
+              />
+            </Col>
+            <Col xs={2}>
+              <Select
+                name="Line"
+                value={this.state.line}
+                options={lineOptions}
+                disabled={this.state.type==''}
+                onChange={this.onSelectLine}
+              />
+            </Col>
+          </Row>
+
           <Input type="select" label="Station" ref="station" disabled={this.state.stations.length==0}>
             <option value="" disable>-- select station --</option>
             {stationOptions}
