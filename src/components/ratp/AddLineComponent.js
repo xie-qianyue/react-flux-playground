@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import { Input, ButtonInput } from 'react-bootstrap';
+import { ButtonInput } from 'react-bootstrap';
 import RatpActions from '../../actions/RatpActions';
 import RatpStore from '../../stores/RatpStores';
 import Select from 'react-select';
@@ -26,13 +26,20 @@ class AddLineComponent extends React.Component {
         {value: 'bus', label: 'Bus'}
       ],
       type: '',
-      line: ''
+      line: '',
+      stationId: '',
+      stationName: '',
+      destinationId: '',
+      destinationName: ''
     }
 
-    this.onSelectType = this.onSelectType.bind(this);
     this.onChangeState = this.onChangeState.bind(this);
+    this.onSelectType = this.onSelectType.bind(this);
     this.onSelectLine = this.onSelectLine.bind(this);
+    this.onSelectStation = this.onSelectStation.bind(this);
+    this.onSelectDestination = this.onSelectDestination.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.clearSelectedValue = this.clearSelectedValue.bind(this);
   }
 
   componentDidMount() {
@@ -52,22 +59,20 @@ class AddLineComponent extends React.Component {
   }
 
   onSelectType(typeOption) {
-    if(typeOption){
+    if(typeOption) {
       let typeSelected = typeOption.value;
       this.setState({
         type: typeSelected
       });
       RatpActions.getLinesByType(typeSelected);
-    }else{
+    } else {
       // reset select
-      this.setState({
-        type: ''
-      });
+      this.clearSelectedValue();
     }
   }
 
   onSelectLine(lineOption) {
-    if(lineOption){
+    if(lineOption) {
       let lineSeleted = lineOption.value;
       RatpActions.getStationsByTypeAndLine(this.state.type, lineSeleted);
       // update destinations
@@ -81,24 +86,61 @@ class AddLineComponent extends React.Component {
           return true;
         }
       }, this);
-    }else{
+    } else {
       this.setState({
-        line: ''
+        line: '',
+        stationId: '',
+        stationName: '',
+        destinationId: '',
+        destinationName: ''
       });
     }
   }
 
-  onSubmit(event){
+  onSelectStation(stationOption) {
+    if(stationOption) {
+      this.setState({
+        stationId: stationOption.value,
+        stationName: stationOption.label
+      });
+    } else {
+       this.setState({
+        stationId: '',
+        stationName: ''
+      });
+    }
+  }
+
+    onSelectDestination(destinationOption) {
+    if(destinationOption) {
+      this.setState({
+        destinationId: destinationOption.value,
+        destinationName: destinationOption.label
+      });
+    } else {
+       this.setState({
+        destinationId: '',
+        destinationName: ''
+      });
+    }
+  }
+
+  onSubmit(event) {
     event.preventDefault();
-    let stationDOM = this.refs.station.getInputDOMNode(),
-        destinationDOM = this.refs.destination.getInputDOMNode();
-    let type = this.refs.type.getValue(),
-        line = this.refs.line.getValue(),
-        stationId = this.refs.station.getValue(),
-        destinationId = this.refs.destination.getValue(),
-        stationName = stationDOM.options[stationDOM.selectedIndex].text,
-        destinationName = destinationDOM.options[destinationDOM.selectedIndex].text;
-    RatpActions.addLine(type, line, stationId, stationName, destinationId, destinationName);
+    RatpActions.addLine(this.state.type, this.state.line, this.state.stationId, this.state.stationName, this.state.destinationId, this.state.destinationName);
+    // reset state
+    this.clearSelectedValue();
+  }
+
+  clearSelectedValue() {
+    this.setState({
+      type: '',
+      line: '',
+      stationId: '',
+      stationName: '',
+      destinationId: '',
+      destinationName: ''
+    });
   }
 
   render() {
@@ -111,27 +153,28 @@ class AddLineComponent extends React.Component {
 
     let stationOptions = this.state.stations.map(station => {
       return (
-        <option value={station.id} key={station.id}>{station.name}</option>
+         {value: station.id, label: station.name}
       );
     });
 
     let destinationOptions = this.state.destinations.map(destination => {
       return (
-        <option value={destination.id} key={destination.id}>{destination.name}</option>
+        {value: destination.id_destination, label: destination.name}
       );
     });
 
     return (
       <div className="addline-component">
         <form>
+          <h3>Add a new line</h3>
           <Row>
             <Col xs={2}>
               <Select
-                name="Line Type"
+                name="Type"
                 value={this.state.type}
                 options={this.state.typeOptions}
                 onChange={this.onSelectType}
-                placeholder="select line type"
+                placeholder="Line Type"
               />
             </Col>
             <Col xs={2}>
@@ -141,19 +184,33 @@ class AddLineComponent extends React.Component {
                 options={lineOptions}
                 disabled={this.state.type==''}
                 onChange={this.onSelectLine}
+                placeholder="Line"
               />
             </Col>
+            <Col xs={4}>
+              <Select
+                name="Station"
+                value={this.state.stationId}
+                options={stationOptions}
+                disabled={this.state.line=='' || this.state.stations.length==0}
+                onChange={this.onSelectStation}
+                placeholder="Station"
+              />
+            </Col>
+            <Col xs={3}>
+              <Select
+                name="Destination"
+                value={this.state.destinationId}
+                options={destinationOptions}
+                disabled={this.state.line==''}
+                onChange={this.onSelectDestination}
+                placeholder="Destination"
+              />
+            </Col>
+            <Col xs={1}>
+              <ButtonInput type="submit" value="Add" onClick={this.onSubmit}/>
+            </Col>
           </Row>
-
-          <Input type="select" label="Station" ref="station" disabled={this.state.stations.length==0}>
-            <option value="" disable>-- select station --</option>
-            {stationOptions}
-          </Input>
-          <Input type="select" label="Destination" ref="destination" disabled={this.state.destinations.length==0}>
-            <option value="" disable>-- select destination --</option>
-            {destinationOptions}
-          </Input>
-           <ButtonInput type="submit" value="Submit Button" onClick={this.onSubmit}/>
         </form>
       </div>
     );
