@@ -37,8 +37,7 @@ const CHANGE_NEW_LINE_EVENT = 'changeNewLine';
 let _ratpStore = {
   horaires: Immutable.Map({'bus-126-1658-70': new Horaire('bus', '126', '1658', 'Issy Val de Seine', '70', 'Porte D Orleans')}),
   newLines: [],
-  newStations: [],
-  newDestinations: []
+  newStations: []
 };
 
 const RatpStore = Object.assign({}, EventEmitter.prototype, {
@@ -135,6 +134,8 @@ AppDispatcher.register(action => {
             id: data.id_station,
             name: data.name
           });
+
+          RatpStore.emitChangeNewLine();
         });
       });
       break;
@@ -153,7 +154,6 @@ AppDispatcher.register(action => {
       // reset add form
       _ratpStore.newLines.length = 0;
       _ratpStore.newStations.length = 0;
-      _ratpStore.newDestinations.length = 0;
       RatpStore.emitChangeNewLine();
       break;
     default:

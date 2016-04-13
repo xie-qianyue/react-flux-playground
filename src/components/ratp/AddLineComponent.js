@@ -53,8 +53,7 @@ class AddLineComponent extends React.Component {
   onChangeState() {
     this.setState({
       lines: RatpStore.getStore().newLines,
-      stations: RatpStore.getStore().newStations,
-      destinations: RatpStore.getStore().newDestinations
+      stations: RatpStore.getStore().newStations
     });
   }
 
@@ -74,7 +73,7 @@ class AddLineComponent extends React.Component {
   onSelectLine(lineOption) {
     if(lineOption) {
       let lineSeleted = lineOption.value;
-      RatpActions.getStationsByTypeAndLine(this.state.type, lineSeleted);
+
       // update destinations
       this.state.lines.some((line) => {
         if(line.line === lineSeleted) {
@@ -86,6 +85,9 @@ class AddLineComponent extends React.Component {
           return true;
         }
       }, this);
+
+      RatpActions.getStationsByTypeAndLine(this.state.type, lineSeleted);
+
     } else {
       this.setState({
         line: '',
