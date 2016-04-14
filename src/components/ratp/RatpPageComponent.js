@@ -24,10 +24,12 @@ class RatpPageComponent extends React.Component {
       RatpActions.updateHoraires();
     }, 3000);
     RatpStore.addChangeHorairesListener(this.onChangeState);
+    RatpStore.addChangeNewLineListener(this.onChangeState);
   }
 
   componentWillUnmount() {
     RatpStore.removeChangeHorairesListener(this.onChangeState);
+    RatpStore.removeChangeNewLineListener(this.onChangeState);
     clearInterval(this.timer);
   }
 

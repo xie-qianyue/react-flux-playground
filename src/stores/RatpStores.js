@@ -149,7 +149,8 @@ AppDispatcher.register(action => {
           destinationName = action.data.destinationName;
       let idHoraire = type + '-' + line + '-' + stationId + '-' + destinationId,
           horaire = new Horaire(type, line, stationId, stationName, destinationId, destinationName);
-      _ratpStore.horaires = _ratpStore.horaires.concat({idHoraire, horaire});
+      // use an Iterable of [K, V] tuple entries
+      _ratpStore.horaires = _ratpStore.horaires.merge([[idHoraire, horaire]]);
       
       // reset add form
       _ratpStore.newLines.length = 0;
