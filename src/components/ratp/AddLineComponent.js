@@ -73,7 +73,6 @@ class AddLineComponent extends React.Component {
   onSelectLine(lineOption) {
     if(lineOption) {
       let lineSeleted = lineOption.value;
-
       // update destinations
       this.state.lines.some((line) => {
         if(line.line === lineSeleted) {
@@ -113,7 +112,7 @@ class AddLineComponent extends React.Component {
     }
   }
 
-    onSelectDestination(destinationOption) {
+  onSelectDestination(destinationOption) {
     if(destinationOption) {
       this.setState({
         destinationId: destinationOption.value,
@@ -161,7 +160,7 @@ class AddLineComponent extends React.Component {
 
     let destinationOptions = this.state.destinations.map(destination => {
       return (
-        {value: destination.id_destination, label: destination.name}
+        {value: destination.id, label: destination.name}
       );
     });
 

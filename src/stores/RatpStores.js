@@ -131,7 +131,7 @@ AppDispatcher.register(action => {
         _ratpStore.newStations.length = 0;
         res.response.stations.forEach(data => {
           _ratpStore.newStations.push({
-            id: data.id_station,
+            id: data.id,
             name: data.name
           });
 
